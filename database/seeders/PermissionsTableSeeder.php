@@ -112,30 +112,26 @@ class PermissionsTableSeeder extends Seeder
             ],
             [
                 'id'    => 26,
-                'title' => 'code_access',
-            ],
-            [
-                'id'    => 27,
                 'title' => 'purchase_create',
             ],
             [
-                'id'    => 28,
+                'id'    => 27,
                 'title' => 'purchase_edit',
             ],
             [
-                'id'    => 29,
+                'id'    => 28,
                 'title' => 'purchase_show',
             ],
             [
-                'id'    => 30,
+                'id'    => 29,
                 'title' => 'purchase_delete',
             ],
             [
-                'id'    => 31,
+                'id'    => 30,
                 'title' => 'purchase_access',
             ],
             [
-                'id'    => 32,
+                'id'    => 31,
                 'title' => 'profile_password_edit',
             ],
         ];
