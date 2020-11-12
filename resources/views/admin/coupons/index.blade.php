@@ -40,6 +40,11 @@
                         <th>
                             {{ trans('cruds.coupon.fields.purchased_codes') }}
                         </th>
+                        @can('coupon_create')
+                            <th>
+                                Add codes
+                            </th>
+                        @endcan
                         <th>
                             &nbsp;
                         </th>
@@ -73,6 +78,17 @@
                             <td>
                                 {{ $coupon->purchased_codes_count ?? '' }}
                             </td>
+                            @can('coupon_create')
+                                <td>
+                                    <form action="{{ route('admin.coupons.generateCodes', $coupon->id) }}" method="POST" class="form-inline">
+                                        @csrf
+                                        <div class="input-group input-group-sm">
+                                            <input type="number" class="form-control" name="amount" placeholder="Amount" required>
+                                        </div>
+                                        <input type="submit" class="btn btn-xs btn-success ml-2" value="Generate">
+                                    </form>
+                                </td>
+                            @endcan
                             <td>
                                 @can('coupon_show')
                                     <a class="btn btn-xs btn-primary" href="{{ route('admin.coupons.show', $coupon->id) }}">

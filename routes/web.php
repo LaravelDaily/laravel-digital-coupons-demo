@@ -21,6 +21,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('coupons/destroy', 'CouponsController@massDestroy')->name('coupons.massDestroy');
     Route::post('coupons/media', 'CouponsController@storeMedia')->name('coupons.storeMedia');
     Route::post('coupons/ckmedia', 'CouponsController@storeCKEditorImages')->name('coupons.storeCKEditorImages');
+    Route::post('coupons/{coupon}/add-codes', 'CouponsController@generateCodes')->name('coupons.generateCodes');
     Route::resource('coupons', 'CouponsController');
 
     // Codes

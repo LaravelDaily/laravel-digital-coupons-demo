@@ -127,4 +127,30 @@ class CouponsController extends Controller
 
         return response()->json(['id' => $media->id, 'url' => $media->getUrl()], Response::HTTP_CREATED);
     }
+
+    public function generateCodes(Request $request, Coupon $coupon) {
+        $request->validate([
+            'amount' => 'required|integer|min:1',
+        ]);
+
+        if ($request->input('amount') > 0) {
+            do {
+                $codes = [];
+
+                for ($i = 0; $i < $request->input('amount'); $i++) {
+                    $codes[] = (string)mt_rand(pow(10, 10), pow(10, 11) - 1);
+                }
+
+                $codesUnique = Code::whereIn('code', $codes)->count() == 0;
+            } while (!$codesUnique);
+
+            foreach ($codes as $code) {
+                $coupon->codes()->create([
+                    'code' => $code
+                ]);
+            }
+        }
+
+        return redirect()->route('admin.coupons.index')->withMessage('Codes generated successfully');
+    }
 }
