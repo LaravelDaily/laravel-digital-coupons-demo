@@ -7,6 +7,7 @@ use App\Http\Controllers\Traits\MediaUploadingTrait;
 use App\Http\Requests\MassDestroyCouponRequest;
 use App\Http\Requests\StoreCouponRequest;
 use App\Http\Requests\UpdateCouponRequest;
+use App\Models\Code;
 use App\Models\Coupon;
 use Gate;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ class CouponsController extends Controller
     {
         abort_if(Gate::denies('coupon_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $coupons = Coupon::all();
+        $coupons = Coupon::withCount('codes', 'purchasedCodes')->get();
 
         return view('admin.coupons.index', compact('coupons'));
     }
@@ -43,6 +44,24 @@ class CouponsController extends Controller
 
         if ($media = $request->input('ck-media', false)) {
             Media::whereIn('id', $media)->update(['model_id' => $coupon->id]);
+        }
+
+        if ($request->input('amount') > 0) {
+            do {
+                $codes = [];
+
+                for ($i = 0; $i < $request->input('amount'); $i++) {
+                    $codes[] = (string)mt_rand(pow(10, 10), pow(10, 11) - 1);
+                }
+
+                $codesUnique = Code::whereIn('code', $codes)->count() == 0;
+            } while (!$codesUnique);
+
+            foreach ($codes as $code) {
+                $coupon->codes()->create([
+                    'code' => $code
+                ]);
+            }
         }
 
         return redirect()->route('admin.coupons.index');

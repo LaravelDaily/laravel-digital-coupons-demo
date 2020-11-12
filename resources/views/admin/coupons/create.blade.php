@@ -41,6 +41,16 @@
                 <span class="help-block">{{ trans('cruds.coupon.fields.photo_helper') }}</span>
             </div>
             <div class="form-group">
+                <label class="required" for="amount">{{ trans('cruds.coupon.fields.amount') }}</label>
+                <input class="form-control {{ $errors->has('amount') ? 'is-invalid' : '' }}" type="number" name="amount" id="amount" value="{{ old('amount', 100) }}" required>
+                @if($errors->has('amount'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('amount') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.coupon.fields.amount_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>

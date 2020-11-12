@@ -35,6 +35,12 @@
                             {{ trans('cruds.coupon.fields.photo') }}
                         </th>
                         <th>
+                            {{ trans('cruds.coupon.fields.total_codes') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.coupon.fields.purchased_codes') }}
+                        </th>
+                        <th>
                             &nbsp;
                         </th>
                     </tr>
@@ -60,6 +66,12 @@
                                         <img src="{{ $coupon->photo->getUrl('thumb') }}">
                                     </a>
                                 @endif
+                            </td>
+                            <td>
+                                {{ $coupon->codes_count ?? '' }}
+                            </td>
+                            <td>
+                                {{ $coupon->purchased_codes_count ?? '' }}
                             </td>
                             <td>
                                 @can('coupon_show')

@@ -24,6 +24,10 @@ class StoreCouponRequest extends FormRequest
             'price' => [
                 'required',
             ],
+            'amount' => [
+                'integer',
+                'required',
+            ],
         ];
     }
 }

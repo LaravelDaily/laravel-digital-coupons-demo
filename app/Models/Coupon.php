@@ -57,4 +57,14 @@ class Coupon extends Model implements HasMedia
 
         return $file;
     }
+
+    public function codes()
+    {
+        return $this->hasMany(Code::class);
+    }
+
+    public function purchasedCodes()
+    {
+        return $this->hasMany(Code::class)->whereNotNull('purchased_at');
+    }
 }
