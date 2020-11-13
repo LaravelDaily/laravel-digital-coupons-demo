@@ -19,8 +19,6 @@ class CouponsController extends Controller
 
     public function index()
     {
-        abort_if(Gate::denies('coupon_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
         $coupons = Coupon::all();
 
         return view('frontend.coupons.index', compact('coupons'));

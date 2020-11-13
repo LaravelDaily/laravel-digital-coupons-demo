@@ -1,6 +1,7 @@
 <?php
 
-Route::view('/', 'welcome');
+Route::redirect('/', '/coupons');
+Route::get('/coupons', 'Frontend\CouponsController@index')->name('frontend.coupons.index');
 Auth::routes();
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth', 'admin']], function () {
@@ -42,7 +43,7 @@ Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 
     }
 });
 Route::group(['as' => 'frontend.', 'namespace' => 'Frontend', 'middleware' => ['auth']], function () {
-    Route::get('/home', 'HomeController@index')->name('home');
+    Route::redirect('/home', '/coupons')->name('home');
 
     // Permissions
     Route::delete('permissions/destroy', 'PermissionsController@massDestroy')->name('permissions.massDestroy');
@@ -58,7 +59,7 @@ Route::group(['as' => 'frontend.', 'namespace' => 'Frontend', 'middleware' => ['
 
     // Coupons
     Route::delete('coupons/destroy', 'CouponsController@massDestroy')->name('coupons.massDestroy');
-    Route::resource('coupons', 'CouponsController');
+    Route::resource('coupons', 'CouponsController')->except('index');
 
     // Codes
     Route::delete('codes/destroy', 'CodesController@massDestroy')->name('codes.massDestroy');

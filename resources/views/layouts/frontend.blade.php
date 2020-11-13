@@ -49,7 +49,7 @@
                         @else
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('frontend.home') }}">
-                                    {{ __('Dashboard') }}
+                                    {{ __('Home') }}
                                 </a>
                             </li>
                         @endguest
@@ -97,11 +97,9 @@
                                             {{ trans('cruds.user.title') }}
                                         </a>
                                     @endcan
-                                    @can('coupon_access')
-                                        <a class="dropdown-item" href="{{ route('frontend.coupons.index') }}">
-                                            {{ trans('cruds.coupon.title') }}
-                                        </a>
-                                    @endcan
+                                    <a class="dropdown-item" href="{{ route('frontend.coupons.index') }}">
+                                        {{ trans('cruds.coupon.title') }}
+                                    </a>
                                     @can('code_access')
                                         <a class="dropdown-item" href="{{ route('frontend.codes.index') }}">
                                             {{ trans('cruds.code.title') }}
