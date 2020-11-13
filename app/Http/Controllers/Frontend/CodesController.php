@@ -90,4 +90,33 @@ class CodesController extends Controller
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
+
+    public function purchase(Request $request, Code $code)
+    {
+        $user          = $request->user();
+        $paymentMethod = $request->input('payment_method');
+        $code->load('coupon');
+
+        try {
+            $user->createOrGetStripeCustomer();
+            $user->updateDefaultPaymentMethod($paymentMethod);
+            $user->charge($code->coupon->price * 100, $paymentMethod);
+
+            $code->purchase()->create([
+                'user_id' => $user->id,
+                'price'   => $code->coupon->price,
+            ]);
+
+            $code->update([
+                'reserved_at'     => null,
+                'reserved_by'     => null,
+                'purchased_at'    => now(),
+                'purchased_by_id' => $user->id,
+            ]);
+        } catch (\Exception $exception) {
+            return redirect()->back()->withErrors([$exception->getMessage()]);
+        }
+
+        return redirect()->back()->with('message', 'The coupon has been purchased successfully. Code of the coupon is: ' . $code->code);
+    }
 }

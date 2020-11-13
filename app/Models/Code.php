@@ -73,4 +73,9 @@ class Code extends Model
     {
         return $this->belongsTo(User::class, 'purchased_by_id');
     }
+
+    public function purchase()
+    {
+        return $this->hasOne(Purchase::class);
+    }
 }

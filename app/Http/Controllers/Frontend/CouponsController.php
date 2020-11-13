@@ -76,7 +76,10 @@ class CouponsController extends Controller
     {
         abort_if(Gate::denies('coupon_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return view('frontend.coupons.show', compact('coupon'));
+        $intent = auth()->user()->createSetupIntent();
+        $code   = $coupon->reserved_code;
+
+        return view('frontend.coupons.show', compact('coupon', 'intent', 'code'));
     }
 
     public function destroy(Coupon $coupon)

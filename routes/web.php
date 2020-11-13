@@ -63,6 +63,7 @@ Route::group(['as' => 'frontend.', 'namespace' => 'Frontend', 'middleware' => ['
 
     // Codes
     Route::delete('codes/destroy', 'CodesController@massDestroy')->name('codes.massDestroy');
+    Route::post('codes/{code}/purchase', 'CodesController@purchase')->name('codes.purchase');
     Route::resource('codes', 'CodesController');
 
     // Purchases

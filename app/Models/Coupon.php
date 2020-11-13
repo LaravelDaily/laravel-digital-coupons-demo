@@ -67,4 +67,28 @@ class Coupon extends Model implements HasMedia
     {
         return $this->hasMany(Code::class)->whereNotNull('purchased_at');
     }
+
+    public function getReservedCodeAttribute()
+    {
+        if (auth()->guest()) {
+            return null;
+        }
+
+        $code = $this->codes()
+            ->whereNull('purchased_at')
+            ->where(function ($query) {
+                $query->where('reserved_by_id', auth()->id())
+                    ->orWhereNull('reserved_at');
+            })
+            ->first();
+
+        if ($code && $code->reserved_at == null) {
+            $code->update([
+                'reserved_at' => now(),
+                'reserved_by_id' => auth()->id()
+            ]);
+        }
+
+        return $code;
+    }
 }
