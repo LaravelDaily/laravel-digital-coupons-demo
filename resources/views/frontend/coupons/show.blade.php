@@ -72,6 +72,10 @@
             <div class="card">
                 <div class="card-header">Purchase Now</div>
                 <div class="card-body">
+                    <p>
+                        Coupon code reserved. Time to buy:
+                        <span id="timer">{{ (int)($timerSeconds / 60) }}:{{ ($timerSeconds % 60) < 10 ? '0' : '' }}{{ $timerSeconds % 60 }}</span>
+                    </p>
                     <p>The price of a coupon is ${{ $coupon->price }}.</p>
                     <form method="POST" action="{{ route('frontend.codes.purchase', $code) }}" class="card-form mt-3 mb-3">
                         @csrf
@@ -121,6 +125,20 @@
 @section('scripts')
 <script src="https://js.stripe.com/v3/"></script>
 <script>
+    let secondsLeft = {{ $timerSeconds }}, formattedTime;
+
+    let timerInterval = setInterval(function () {
+        secondsLeft--;
+        let minutes = secondsLeft / 60, seconds = secondsLeft % 60;
+        formattedTime = Math.floor(minutes) + ":" + (seconds < 10 ? '0' : '') + seconds;
+        $('span#timer').text(formattedTime);
+
+        if (secondsLeft <= 0) {
+            alert("Sorry, you didn't purchase on time");
+            window.location.href = "{{ route('frontend.coupons.index') }}";
+        }
+    }, 1000);
+
     let stripe = Stripe("{{ env('STRIPE_KEY') }}")
     let elements = stripe.elements()
     let style = {

@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateCodeRequest;
 use App\Models\Code;
 use App\Models\Coupon;
 use App\Models\User;
+use Carbon\Carbon;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -93,7 +94,15 @@ class CodesController extends Controller
 
     public function purchase(Request $request, Code $code)
     {
-        $user          = $request->user();
+        $user               = $request->user();
+        $isReservationValid = $code->reserved_at ? Carbon::parse($code->reserved_at)->addMinutes(10)->isFuture() : false;
+
+        if ($code->reserved_by_id != $user->id || !$isReservationValid) {
+            return redirect()
+                ->route('frontend.coupons.index')
+                ->withErrors(['Sorry, you didn\'t purchase on time']);
+        }
+
         $paymentMethod = $request->input('payment_method');
         $code->load('coupon');
 
@@ -117,6 +126,8 @@ class CodesController extends Controller
             return redirect()->back()->withErrors([$exception->getMessage()]);
         }
 
-        return redirect()->back()->with('message', 'The coupon has been purchased successfully. Code of the coupon is: ' . $code->code);
+        return redirect()
+            ->route('frontend.coupons.index')
+            ->with('message', 'The coupon has been purchased successfully. Code of the coupon is: ' . $code->code);
     }
 }

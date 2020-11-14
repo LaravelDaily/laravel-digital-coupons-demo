@@ -8,6 +8,7 @@ use App\Http\Requests\MassDestroyCouponRequest;
 use App\Http\Requests\StoreCouponRequest;
 use App\Http\Requests\UpdateCouponRequest;
 use App\Models\Coupon;
+use Carbon\Carbon;
 use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -19,7 +20,10 @@ class CouponsController extends Controller
 
     public function index()
     {
-        $coupons = Coupon::all();
+        $coupons = Coupon::whereHas('codes', function ($query) {
+                $query->availableForUser();
+            })
+            ->get();
 
         return view('frontend.coupons.index', compact('coupons'));
     }
@@ -76,10 +80,18 @@ class CouponsController extends Controller
     {
         abort_if(Gate::denies('coupon_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $intent = auth()->user()->createSetupIntent();
-        $code   = $coupon->reserved_code;
+        $code = $coupon->reserved_code;
 
-        return view('frontend.coupons.show', compact('coupon', 'intent', 'code'));
+        if (!$code) {
+            return redirect()
+                ->route('frontend.coupons.index')
+                ->withErrors(["Sorry, this coupon has no codes available"]);
+        }
+
+        $intent       = auth()->user()->createSetupIntent();
+        $timerSeconds = now()->diffInSeconds(Carbon::parse($code->reserved_at)->addMinutes(10), false);
+
+        return view('frontend.coupons.show', compact('coupon', 'intent', 'code', 'timerSeconds'));
     }
 
     public function destroy(Coupon $coupon)

@@ -75,11 +75,7 @@ class Coupon extends Model implements HasMedia
         }
 
         $code = $this->codes()
-            ->whereNull('purchased_at')
-            ->where(function ($query) {
-                $query->where('reserved_by_id', auth()->id())
-                    ->orWhereNull('reserved_at');
-            })
+            ->availableForUser()
             ->first();
 
         if ($code && $code->reserved_at == null) {

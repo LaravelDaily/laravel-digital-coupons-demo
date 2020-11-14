@@ -78,4 +78,19 @@ class Code extends Model
     {
         return $this->hasOne(Purchase::class);
     }
+
+    public function scopeAvailableForUser($query)
+    {
+        return $query
+            ->whereNull('purchased_at')
+            ->where(function ($query) {
+                $query->when(auth()->check(), function ($query) {
+                    $query->where([
+                            ['reserved_by_id', '=', auth()->id()],
+                            ['reserved_at', '>', now()->subMinutes(10)]
+                        ]);
+                    })
+                    ->orWhereNull('reserved_at');
+            });
+    }
 }
