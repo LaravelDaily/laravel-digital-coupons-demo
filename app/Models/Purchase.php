@@ -42,4 +42,11 @@ class Purchase extends Model
     {
         return $this->belongsTo(Code::class, 'code_id');
     }
+
+    public function scopeAvailableForUser($query)
+    {
+        return $query->when(auth()->check(), function ($query) {
+            $query->where('user_id', auth()->id());
+        });
+    }
 }

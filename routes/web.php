@@ -45,30 +45,14 @@ Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 
 Route::group(['as' => 'frontend.', 'namespace' => 'Frontend', 'middleware' => ['auth']], function () {
     Route::redirect('/home', '/coupons')->name('home');
 
-    // Permissions
-    Route::delete('permissions/destroy', 'PermissionsController@massDestroy')->name('permissions.massDestroy');
-    Route::resource('permissions', 'PermissionsController');
-
-    // Roles
-    Route::delete('roles/destroy', 'RolesController@massDestroy')->name('roles.massDestroy');
-    Route::resource('roles', 'RolesController');
-
-    // Users
-    Route::delete('users/destroy', 'UsersController@massDestroy')->name('users.massDestroy');
-    Route::resource('users', 'UsersController');
-
     // Coupons
-    Route::delete('coupons/destroy', 'CouponsController@massDestroy')->name('coupons.massDestroy');
-    Route::resource('coupons', 'CouponsController')->except('index');
+    Route::resource('coupons', 'CouponsController')->only('show');
 
     // Codes
-    Route::delete('codes/destroy', 'CodesController@massDestroy')->name('codes.massDestroy');
     Route::post('codes/{code}/purchase', 'CodesController@purchase')->name('codes.purchase');
-    Route::resource('codes', 'CodesController');
 
     // Purchases
-    Route::delete('purchases/destroy', 'PurchasesController@massDestroy')->name('purchases.massDestroy');
-    Route::resource('purchases', 'PurchasesController');
+    Route::resource('purchases', 'PurchasesController')->only(['index', 'show']);
 
     Route::get('frontend/profile', 'ProfileController@index')->name('profile.index');
     Route::post('frontend/profile', 'ProfileController@update')->name('profile.update');

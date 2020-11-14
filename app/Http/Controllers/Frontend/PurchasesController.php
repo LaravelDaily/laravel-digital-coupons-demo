@@ -19,71 +19,19 @@ class PurchasesController extends Controller
     {
         abort_if(Gate::denies('purchase_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $purchases = Purchase::all();
+        $purchases = Purchase::availableForUser()->get();
 
         return view('frontend.purchases.index', compact('purchases'));
     }
 
-    public function create()
-    {
-        abort_if(Gate::denies('purchase_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $users = User::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $codes = Code::all()->pluck('code', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        return view('frontend.purchases.create', compact('users', 'codes'));
-    }
-
-    public function store(StorePurchaseRequest $request)
-    {
-        $purchase = Purchase::create($request->all());
-
-        return redirect()->route('frontend.purchases.index');
-    }
-
-    public function edit(Purchase $purchase)
-    {
-        abort_if(Gate::denies('purchase_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $users = User::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $codes = Code::all()->pluck('code', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $purchase->load('user', 'code');
-
-        return view('frontend.purchases.edit', compact('users', 'codes', 'purchase'));
-    }
-
-    public function update(UpdatePurchaseRequest $request, Purchase $purchase)
-    {
-        $purchase->update($request->all());
-
-        return redirect()->route('frontend.purchases.index');
-    }
-
-    public function show(Purchase $purchase)
+    public function show($purchase)
     {
         abort_if(Gate::denies('purchase_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $purchase->load('user', 'code');
+        $item = Purchase::availableForUser()
+            ->with('user', 'code')
+            ->findOrFail($purchase);
 
-        return view('frontend.purchases.show', compact('purchase'));
-    }
-
-    public function destroy(Purchase $purchase)
-    {
-        abort_if(Gate::denies('purchase_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $purchase->delete();
-
-        return back();
-    }
-
-    public function massDestroy(MassDestroyPurchaseRequest $request)
-    {
-        Purchase::whereIn('id', request('ids'))->delete();
-
-        return response(null, Response::HTTP_NO_CONTENT);
+        return view('frontend.purchases.show', ['purchase' => $item]);
     }
 }

@@ -76,35 +76,9 @@
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
 
                                     <a class="dropdown-item" href="{{ route('frontend.profile.index') }}">{{ __('My profile') }}</a>
-
-                                    @can('user_management_access')
-                                        <a class="dropdown-item disabled" href="#">
-                                            {{ trans('cruds.userManagement.title') }}
-                                        </a>
-                                    @endcan
-                                    @can('permission_access')
-                                        <a class="dropdown-item ml-3" href="{{ route('frontend.permissions.index') }}">
-                                            {{ trans('cruds.permission.title') }}
-                                        </a>
-                                    @endcan
-                                    @can('role_access')
-                                        <a class="dropdown-item ml-3" href="{{ route('frontend.roles.index') }}">
-                                            {{ trans('cruds.role.title') }}
-                                        </a>
-                                    @endcan
-                                    @can('user_access')
-                                        <a class="dropdown-item ml-3" href="{{ route('frontend.users.index') }}">
-                                            {{ trans('cruds.user.title') }}
-                                        </a>
-                                    @endcan
                                     <a class="dropdown-item" href="{{ route('frontend.coupons.index') }}">
                                         {{ trans('cruds.coupon.title') }}
                                     </a>
-                                    @can('code_access')
-                                        <a class="dropdown-item" href="{{ route('frontend.codes.index') }}">
-                                            {{ trans('cruds.code.title') }}
-                                        </a>
-                                    @endcan
                                     @can('purchase_access')
                                         <a class="dropdown-item" href="{{ route('frontend.purchases.index') }}">
                                             {{ trans('cruds.purchase.title') }}
